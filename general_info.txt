@@ -1,0 +1,176 @@
+***********
+** NOTE! **
+***********
+This is an informational file.
+I use RHTML syntax for syntax highlighting purposes.
+Do not run this as code.
+
+**********************
+** bundler notation **
+**********************
+
+<%
+    # install some-gem only in development and test environments,
+    # not in production or other.
+    group :development, :test do
+        gem 'some-gem', '1.0.0'     # install version 1.0.0
+        gem 'other-gem', '>= 1.0.0' # install any version 1.0.0 or higher
+        gem 'third-gem', '~> 1.0.0' # install any version 1.0.0 or higher,
+        #                           # but not as high as 2.0
+    end
+%>
+
+*********************
+** RVM and Gemsets **
+*********************
+
+Ruby Version Manager is what allows us to have more than one version of ruby on the same system.
+
+One of the things that can be customized is the gemset you use. You can set up multiple gemsets,
+and switch between them using 'rvm use <ruby_version_number>@<gemset_name>',
+as in 'rvm use 1.9.3@gemset1', where 1.9.3 is the version of ruby used, and project1 is
+the name of the gemset.
+
+You should probably use seperate gemsets for each of your projects.
+
+You can create gemsets using the '--create' flag,
+and set gemsets as the default with the '--default' flag.
+
+For example you could run 'rvm use 1.9.3@new_gemset --create --default'
+to create a new gemset called new_gemset and set it as the default.
+
+***********
+** RSpec **
+***********
+For testing.
+
+in Gemfile:
+<%
+    group :development, :test do
+        gem 'rspec-rails', '2.11.0'
+    end
+    
+    group :test do
+        gem 'capybara', '1.1.2'
+        gem 'guard-spork', '1.2.0'
+        gem 'childprocess', '0.3.6'
+        gem 'spork', '0.9.2'
+        # gem 'factory_girl_rails', '4.1.0'
+    end
+%>
+
+Don't forget to run 'bundle install' after updating your Gemfile.
+Run 'spork --bootstrap' to "bootstrap the spork configuration" (whatever that means).
+Run 'rails g rspec:install' to get 'spec' and 'spec/sepc_helper.rb' installed.
+
+ * * * * * * * *
+ *  IMPORTANT  *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Rearange the code so that everything outside of         *
+ * <%                                                      *
+ *     spork.prefork do                                    *
+ *     # and                                               *
+ *     spork.each_run do                                   *
+ *                                                         *
+ *     # is inside of                                      *
+ *     spork.prefork do                                    *
+ * %>                                                      *
+ * otherwise all of that code will be run in BOTH stages,  *
+ * which would be totally useless.                         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+Run 'guard init' to create a Guardfile.
+Then edit it as follows:
+
+in Guardfile
+<%
+    #insert 'after_all_pass: false' like so:
+    guard 'rspec', version: 2, all_after_pass: false do
+        .
+        .
+        .
+    end
+%>
+
+For guard to work it's magic, it must have a dedicated terminal window to run in.
+So open a terminal window, type 'guard', and let it idle in the background while you code.
+
+Run your tests with 'rspec <path>' where <path> is the path that contains your tests.
+This can be the full path to an induvidual test, or a file that contains multiple tests.
+
+**********************
+** secure passwords **
+**********************
+Use BCrypt:
+
+in Gemfile:
+<%
+    gem 'bcrypt-ruby', '3.0.1'
+%>
+
+in app/models/user.rb:
+<%
+    class User < ActiveRecord::Base
+        attr_accessible :password, :password_confirmation
+        has_secure_password
+        
+        validates :password, length: { minimum: min } # where min is the desired minimum length
+    end
+%>
+
+for faster tests:
+
+in config/environments/test.rb:
+<%
+    SampleApp::Application.configure do
+      .
+      .
+      .
+      # Speed up tests by lowering BCrypt's cost function.
+      require 'bcrypt'
+      silence_warnings do
+        BCrypt::Engine::DEFAULT_COST = BCrypt::Engine::MIN_COST
+      end
+    end
+%>
+
+  ** NOTE **
+Do not do this in production.
+It speeds up password checking times, but at the cost of security.
+
+*******************
+** Rails Console **
+*******************
+
+The Rails Console is basically irb for Rails.
+To run it, you can type 'rails console', or just 'rails c' for short.
+
+If you want to run it in 'sandbox' mode, which will automatically revert any changes
+you make to the database, you can use the parameter '--sandbox',
+as in 'rails c --sandbox'.
+
+******************
+** Rails Server **
+******************
+
+The Rails Server is what you use to actually run the site.
+By default, 'localhost:3000' will be routed to the Rails Server, but this can be customized.
+
+************************
+** Rails Environments **
+************************
+
+The three environments that rails sets up for you are test, development and production.
+
+To default environment for the Rails Console is development.
+To run the console in another environment, run 'rails c <environment>',
+as in 'rails c test' to run the Rails Console in the test environment.
+
+The default environment for the Rails Server is development.
+To run the server in another environment, run 'rails s --environment <environment>',
+as in 'rails s --environment test' to run the Rails Server in the test environment.
+
+If you view your app running in production, it won’t work without a production database,
+which we can create by running rake db:migrate in production.
+You can specify your environment to rake by using 'RAILS_ENV=<environment>',
+as in 'rake db:migrate RAILS_ENV=production'
