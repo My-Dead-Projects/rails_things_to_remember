@@ -170,7 +170,7 @@ The default environment for the Rails Server is development.
 To run the server in another environment, run 'rails s --environment <environment>',
 as in 'rails s --environment test' to run the Rails Server in the test environment.
 
-If you view your app running in production, it won’t work without a production database,
+If you view your app running in production, it won't work without a production database,
 which we can create by running rake db:migrate in production.
 You can specify your environment to rake by using 'RAILS_ENV=<environment>',
 as in 'rake db:migrate RAILS_ENV=production'
