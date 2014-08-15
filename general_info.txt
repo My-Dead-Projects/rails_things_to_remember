@@ -31,6 +31,8 @@ and switch between them using 'rvm use <ruby_version_number>@<gemset_name>',
 as in 'rvm use 1.9.3@gemset1', where 1.9.3 is the version of ruby used, and project1 is
 the name of the gemset.
 
+You can find out which gemset you're currently using with 'rvm current'.
+
 You should probably use seperate gemsets for each of your projects.
 
 You can create gemsets using the '--create' flag,
